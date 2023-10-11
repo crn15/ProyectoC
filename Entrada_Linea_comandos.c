@@ -29,7 +29,16 @@ int Flag_Identifier(  int num_argc, char *argv[] , char *path_entrada , char *pa
       // Si se ingresa solo un argumento debe ser el de help de otra manera es un error
 			if ( strcmp( argv[1] , "-help" ) == True || strcmp( argv[1] , "-h" ) == True) {
 				printf("Help\n");
-				return True;
+				//Imprime un archivo de ayuda
+				FILE *fp;
+				fp = fopen("Help.txt","r");
+				char line[150];
+				while (fgets(line,150,fp)){
+					printf("%s",line);
+
+				}
+				fclose(fp);
+				return False;
 			} else {
 				printf("Flag invalido\n");
 				return False;
