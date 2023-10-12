@@ -67,6 +67,32 @@ int main(int argc, char * argv[]) {
   png_read_image(png, row_pointers);
 
 
+
+  // ===== Crear una nueva imagen rotada =====
+
+  // intercambiar ancho y alto
+  int rotated_width = height;
+  int rotated_height = width;
+
+  // reservar memoria para almacenar la imagen rotada
+  png_bytep * rotated_row_pointers = (png_bytep *)malloc(sizeof(png_bytep) * rotated_height);
+
+  for (int y = 0; y < rotated_height; y++) {
+    rotated_row_pointers[y] = (png_byte *)malloc(png_get_rowbytes(png, info));
+  }
+
+  // copiar y rotar los datos de los pixeles
+  for (int y = 0; y < height; y++) {
+    for (int x = 0; x < width; x++) {
+      for (int c = 0; c < num_channels; c++) {
+        rotated_row_pointers[x][c] = row_pointers[y][x * num_channels + c];
+      }
+    }
+  }
+
+
+
+
   // finalmente limpiar y liberar recursos
   png_destroy_read_struct(&png, &info, NULL);
   fclose(file);
