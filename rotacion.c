@@ -73,7 +73,7 @@ int main(int argc, char * argv[]) {
   // intercambiar ancho y alto
   int rotated_width = height;
   int rotated_height = width;
-  printf("width: %d\nheight: %d\nrotated_width: %d\nrotated height: %d\n", width, height, rotated_width, rotated_height);
+  //printf("width: %d\nheight: %d\nrotated_width: %d\nrotated height: %d\n", width, height, rotated_width, rotated_height);
 
 
   // reservar memoria para almacenar la imagen rotada
@@ -85,12 +85,17 @@ int main(int argc, char * argv[]) {
 
   // copiar y rotar los datos de los pixeles intercambiando filas y columnas
   for (int y = 0; y < height; y++) {
+    //int rotated_x = height - y - 1;
+    //int rotated_y = x;
     for (int x = 0; x < width; x++) {
 
-      png_bytep pixel = &(row_pointers[y][x * num_channels]); // obtener pixel original
+      png_bytep pixel = &(row_pointers[y][x]); // obtener pixel original
       
       int rotated_x = height - y - 1;
       int rotated_y = x;
+
+      //printf("x: %d, rotated_y: %d\n", x, rotated_y);
+      //printf("y: %d, rotated_x: %d\n", y, rotated_x);
 
       png_bytep rotated_pixel = &(rotated_row_pointers[rotated_y][rotated_x]); // obtener pixel rotado
 
