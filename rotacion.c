@@ -73,6 +73,8 @@ int main(int argc, char * argv[]) {
   // intercambiar ancho y alto
   int rotated_width = height;
   int rotated_height = width;
+  printf("width: %d\nheight: %d\nrotated_width: %d\nrotated height: %d\n", width, height, rotated_width, rotated_height);
+
 
   // reservar memoria para almacenar la imagen rotada
   png_bytep * rotated_row_pointers = (png_bytep *)malloc(sizeof(png_bytep) * rotated_height);
@@ -81,21 +83,83 @@ int main(int argc, char * argv[]) {
     rotated_row_pointers[y] = (png_byte *)malloc(png_get_rowbytes(png, info));
   }
 
-  // copiar y rotar los datos de los pixeles
+  // copiar y rotar los datos de los pixeles intercambiando filas y columnas
   for (int y = 0; y < height; y++) {
     for (int x = 0; x < width; x++) {
+
+      png_bytep pixel = &(row_pointers[y][x * num_channels]); // obtener pixel original
+      
+      int rotated_x = height - y - 1;
+      int rotated_y = x;
+
+      png_bytep rotated_pixel = &(rotated_row_pointers[rotated_y][rotated_x]); // obtener pixel rotado
+
+
+      // copiar el pixel original en la posición correspondiete en la imagen rotada
       for (int c = 0; c < num_channels; c++) {
-        rotated_row_pointers[x][c] = row_pointers[y][x * num_channels + c];
+        //rotated_row_pointers[x][c] = row_pointers[y][x * num_channels + c];
+        rotated_pixel[c] = pixel[c];
       }
     }
   }
 
 
+  // crear archivo para guardar la imagen rotada
+  FILE * output_file = fopen(output_path, "wb"); // write binary
+
+  if (!output_file) {
+    fprintf(stderr, "Error al abrir el archivo de destino para la imagen rotada\n");
+    return 1;
+  }
+
+  // inicializar una estructura para la escritura PNG
+  png_structp png_write = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+
+  if (!png_write) {
+    fclose(output_file);
+    fprintf(stderr, "Error inicializando estructura de escritura PNG");
+    return 1;
+  }
 
 
-  // finalmente limpiar y liberar recursos
+  // inicializar la escritura
+  png_init_io(png_write, output_file);
+
+
+  // establecer la información de imagen PNG en el nuevo archivo rotado
+  png_set_IHDR(png_write, info, rotated_width, rotated_height, bit_depth, color_type, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+
+  // escribir la información de la imagen
+  png_write_info(png_write, info);
+
+  // escribir los datos de los pixeles de la imagen rotada
+  png_write_image(png_write, rotated_row_pointers);
+
+  // finalizar escritura
+  png_write_end(png_write, NULL);
+
+
+  // limpiar y liberar recursos y memmoria
+
   png_destroy_read_struct(&png, &info, NULL);
+  png_destroy_write_struct(&png_write, &info);
   fclose(file);
+  fclose(output_file);
+
+
+  for (int y = 0; y < rotated_height; y++) {
+    free(rotated_row_pointers[y]);
+  }
+  
+  free(rotated_row_pointers);
+
+  for (int y = 0; y < height; y++) {
+    free(row_pointers[y]);
+  }
+
+  free(row_pointers);
+
+
 
 
   return 0;
