@@ -9,7 +9,7 @@
  * */
 
 //Defino este enum para poder usar las expresiones True y False a lo largo del codigo
-enum True_False { True = 0 , False = -1 };
+//enum True_False { True = 0 , False = -1 };
 
 
 
@@ -75,7 +75,7 @@ int Flag_Identifier(  int num_argc, char *argv[] , char *path_entrada , char *pa
 			return False;
 	}
 }
-int main(int argc, char *argv[]) {
+/*int main(int argc, char *argv[]) {
       
 	char path[35] , out[35] , transform[4];
 
@@ -91,4 +91,4 @@ int main(int argc, char *argv[]) {
 	}
 
         return 0;
-}
+}*/

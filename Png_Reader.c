@@ -102,11 +102,11 @@ void Read_Png(char *path) {
 	png_read_end(png_ptr, NULL);
 	png_destroy_read_struct(&png_ptr, &info_ptr,NULL);
 
-	for ( int i = 0 ; i < height ; i++) {
+	/*for ( int i = 0 ; i < height ; i++) {
 		free(filas_ptr[i]);
 	}
 
-	free(filas_ptr);
+	free(filas_ptr);*/
 	fclose(fp);
 	printf("READ\n");
 }

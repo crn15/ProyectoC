@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include "declaraciones.h"
 /*Esta funcion revisa si el archivo es un png
  *resibe el path del archivo
  *retorna True or False segun sea el caso
