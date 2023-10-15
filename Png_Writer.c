@@ -58,6 +58,7 @@ void Png_Write ( char *path_salida , png_bytep *newarray ) {
         }
 
         free(newarray);
+	newarray = NULL;
 
 	printf("Su imagen fue rotada \n");
 
