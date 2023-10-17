@@ -8,14 +8,12 @@
  *
  * */
 
-//Defino este enum para poder usar las expresiones True y False a lo largo del codigo
-enum True_False { True = 0 , False = -1 };
 
 
 
 
-enum Posible_Flag_Num { HELP = 2 , IMAGE = 6 };
-// Solo hay 2 numeros posibles de flags, si se entran menos o mas deberia dar error
+enum Posible_Flag_Num { HELP = 2 ,DEFAULT = 5 ,IMAGE = 6 };
+// Solo hay 3 numeros posibles de flags, si se entran menos o mas deberia dar error
 
 // Tiene por argumentos el numero de entradas de la linea, el array con las entradas y los array donde se va a guardar las informacion
 int Flag_Identifier(  int num_argc, char *argv[] , char *path_entrada , char *path_salida , char *transformacion ) {
@@ -44,6 +42,29 @@ int Flag_Identifier(  int num_argc, char *argv[] , char *path_entrada , char *pa
 				return False;
 			}
 			break;
+		case DEFAULT:
+			for ( int i =1 ; i < num_argc ; i++ ) {
+				if ( strcmp( *(argv + i ) , "-r" ) == True ) {
+					printf("Argumentos invalidos, ver -help\n");
+					return False;
+				}
+				// No pueden haber solo 4 argumentos y que uno sea r. Ya que este el unico que se puede omitir
+				if ( strcmp( *(argv + i) , "-i") == True ) {
+                                        strcpy( path_entrada , *(argv +i +1));
+                                        printf("%s\n",path_entrada);
+                                        if ( Exist_Dir( path_entrada ) == False ) {
+                                                return False;
+                                        }
+                                        //quiero que se salte a la otra iteracion
+                                        i+=1;
+                                } else if ( strcmp( *(argv + i) , "-o") == True) {
+                                        strcpy( path_salida , *(argv +i +1));
+                                      	//El usario podria digitar un nombre nuevo para guardar la imagen, mas adelante se comprueba que no existan errores al crear o abrir este path
+
+                                        i+=1;
+				}
+			}
+
 		case IMAGE:
 			for ( int i = 1; i < num_argc ; i++ ) {
 			       	if ( strcmp( *(argv + i) , "-i") == True ) {
@@ -56,9 +77,6 @@ int Flag_Identifier(  int num_argc, char *argv[] , char *path_entrada , char *pa
 					i+=1;
 			 	} else if ( strcmp( *(argv + i) , "-o") == True) {
 					strcpy( path_salida , *(argv +i +1));
-					if ( Exist_Dir( path_salida ) == False ) {
-                                                return False;
-                                        }
 
 					i+=1;
 				} else if (  strcmp( *(argv + i), "-r") == True) {
@@ -74,21 +92,7 @@ int Flag_Identifier(  int num_argc, char *argv[] , char *path_entrada , char *pa
 			printf("Entrada no valida, ver -help\n");
 			return False;
 	}
+	
 }
-int main(int argc, char *argv[]) {
-      
-	char path[35] , out[35] , transform[4];
 
-	//strcpy(path, *(argv +2));
-	//printf("%s\n",path);
 
-	int x = Flag_Identifier( argc   , argv , path , out, transform);
-	printf("%s\n",path);
-    	if ( x == False ) {
-		exit(False);
-	} else {
-		printf("El programa continua\n");
-	}
-
-        return 0;
-}
