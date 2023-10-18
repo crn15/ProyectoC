@@ -1,10 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <jpeglib.h>
-#include "declarations.h"
+#include <jerror.h>
 
-extern const char *filename;
-extern unsigned char *imageData;
 extern int width;
 extern int height;
 extern int numChannels;
@@ -12,28 +10,30 @@ extern int numChannels;
 int writeJPEGImage(const char *filename, unsigned char *newimageData, int width, int height, int numChannels) {
 struct jpeg_compress_struct cinfo;
 struct jpeg_error_mgr jerr;
-FILE *outfile = NULL; // Inicializamos el puntero a NULL.
+FILE *outfile = NULL;
 
-// Inicializa la estructura de manejo de errores de JPEG.
+// Inicializa la estructura de manejo de errores.
 cinfo.err = jpeg_std_error(&jerr);
 
-// Inicializa la estructura de compresión de JPEG.
+// Inicializa la estructura de compresión.
 jpeg_create_compress(&cinfo);
 
 // Abre el archivo de salida en modo escritura binaria.
 if ((outfile = fopen(filename, "wb")) == NULL) {
 fprintf(stderr, "No se pudo abrir el archivo de salida %s\n", filename);
+
 if (outfile != NULL) {
 fclose(outfile); // Cierra el archivo si se abrió antes del error.
 }
-jpeg_destroy_compress(&cinfo); // Libera la estructura de compresión.
+// Libera la estructura de compresión.
+jpeg_destroy_compress(&cinfo);
 return 0; // Error
 }
 
 // Configura el archivo de salida para JPEG.
 jpeg_stdio_dest(&cinfo, outfile);
 
-// Configura los atributos de la imagen, como ancho, alto y espacio de color.
+// Configura caracteristicas de la imagen.
 cinfo.image_width = width;
 cinfo.image_height = height;
 cinfo.input_components = numChannels;
@@ -53,8 +53,12 @@ while (cinfo.next_scanline < cinfo.image_height) {
 row_pointer[0] = &newimageData[cinfo.next_scanline * row_stride];
 if (jpeg_write_scanlines(&cinfo, row_pointer, 1) != 1) {
 fprintf(stderr, "Error al escribir líneas de escaneo\n");
-fclose(outfile); // Cierra el archivo en caso de error.
-jpeg_destroy_compress(&cinfo); // Libera la estructura de compresión.
+
+//Cierra el archivo en caso de error.
+fclose(outfile);
+
+// Libera la estructura de compresión.
+jpeg_destroy_compress(&cinfo);
 return 0; // Error
 }
 }
@@ -65,14 +69,14 @@ jpeg_finish_compress(&cinfo);
 // Cierra el archivo de salida.
 if (fclose(outfile) == EOF) {
 fprintf(stderr, "Error al cerrar el archivo de salida\n");
-jpeg_destroy_compress(&cinfo); // Libera la estructura de compresión.
-free(newimageData); //Libera memoria dinamica.
+
+//Libera la estructura de compresiòn.
+jpeg_destroy_compress(&cinfo);
 return 0; // Error
 }
 
-// Libera la estructura de compresión de JPEG.
+// Libera la estructura de compresión.
 jpeg_destroy_compress(&cinfo);
 
-free(newimageData); //Libera memoria dinamica despues de haber liberado todos los recursos.
 return 1; // Éxito
 }
