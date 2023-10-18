@@ -57,30 +57,42 @@ int main(int argc, char * argv[]) {
   int num_channels = (color_type == PNG_COLOR_TYPE_RGBA) ? 4 : 3; // cantidad de canales de color, 3 para RGB o 4 para RGBA
 
   // memory allocation para reservar memoria para almacenar datos de pixeles
-  png_bytep * row_pointers = (png_bytep *)malloc(sizeof(png_bytep) * height);
+  png_bytep * row_pointers = (png_bytep *)malloc(sizeof(png_bytep) * height); //reserva memoria para los punteros a las filas de la imagen original
 
   for (int y = 0; y < height; y++) {
-    row_pointers[y] = (png_byte *)malloc(png_get_rowbytes(png, info));
+    row_pointers[y] = (png_byte *)malloc(png_get_rowbytes(png, info)); //reserva memoria para cada fila y almacenan esas direcciones en cada puntero del arreglo de los punteros a las filas
   } 
   
   // leer los datos de pixeles
-  png_read_image(png, row_pointers);
+  png_read_image(png, row_pointers); //copia los datos de pixeles en las filas
 
 
-
+  // =========================================
   // ===== Crear una nueva imagen rotada =====
+  // desde aquí función de rotar
 
   // intercambiar ancho y alto
   int rotated_width = height;
   int rotated_height = width;
   //printf("width: %d\nheight: %d\nrotated_width: %d\nrotated height: %d\n", width, height, rotated_width, rotated_height);
 
+  // prueba por bug con imagenes más altas que anchas
+  //if (width < height) {
+  //  rotated_height = height;
+  //  rotated_width = width;
+  //}
 
+
+  //printf("**** CHECKPOINT ----> ANTES DE RESERVAR LA MEMORIA PARA LA IMAGEN ROTADA *******\n");
   // reservar memoria para almacenar la imagen rotada
-  png_bytep * rotated_row_pointers = (png_bytep *)malloc(sizeof(png_bytep) * rotated_height);
+  png_bytep * rotated_row_pointers = (png_bytep *)malloc(sizeof(png_bytep) * rotated_height); //asigna memoria para arreglo de punteros a las filas de pixeles de la imagen rotada - puntero a puntero
 
+  //printf("**** CHECKPOINT ----> SE RESERVO MEMORIA PARA LA IMAGEN ROTADA *******\n");
+
+  size_t rotated_row_size = rotated_width * bit_depth * num_channels / 8;
   for (int y = 0; y < rotated_height; y++) {
-    rotated_row_pointers[y] = (png_byte *)malloc(png_get_rowbytes(png, info));
+    //rotated_row_pointers[y] = (png_byte *)malloc(png_get_rowbytes(png, info));
+    rotated_row_pointers[y] = (png_byte *)malloc(rotated_row_size);
   }
 
   // copiar y rotar los datos de los pixeles intercambiando filas y columnas
@@ -91,7 +103,7 @@ int main(int argc, char * argv[]) {
 
       png_bytep pixel = &(row_pointers[y][x]); // obtener pixel original
       
-      int rotated_x = height - y - 1;
+      int rotated_x = height - 1 - y;
       int rotated_y = x;
 
       //printf("x: %d, rotated_y: %d\n", x, rotated_y);
@@ -99,7 +111,7 @@ int main(int argc, char * argv[]) {
 
       png_bytep rotated_pixel = &(rotated_row_pointers[rotated_y][rotated_x]); // obtener pixel rotado
 
-
+      //rotated_pixel = pixel;
       // copiar el pixel original en la posición correspondiete en la imagen rotada
       for (int c = 0; c < num_channels; c++) {
         //rotated_row_pointers[x][c] = row_pointers[y][x * num_channels + c];
@@ -108,6 +120,9 @@ int main(int argc, char * argv[]) {
     }
   }
 
+  //============ hasta aquí función de rotar ================
+  //=========================================================
+  //
 
   // crear archivo para guardar la imagen rotada
   FILE * output_file = fopen(output_path, "wb"); // write binary
