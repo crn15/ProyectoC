@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <jpeglib.h>
+#include <jerror.h>
+#include "declarations.h"
 
 typedef struct {
 unsigned char *data;
@@ -9,7 +11,7 @@ int height;
 int numChannels;
 } ImageData;
 
-// Función para cargar una imagen JPEG con manejo de errores.
+// Función que carga una imagen JPEG.
 ImageData loadJPEGImage(const char *filename) {
 ImageData imageData;
 imageData.data = NULL;
@@ -27,7 +29,7 @@ fprintf(stderr, "No se pudo abrir el archivo %s\n", filename);
 return imageData; // Devuelve una estructura vacía si hay un error.
 }
 
-// Configura el manejador de errores para libjpeg.
+// Configura el manejo de errores.
 cinfo.err = jpeg_std_error(&jerr);
 
 // Crea la estructura de descompresión de JPEG.
@@ -59,7 +61,7 @@ row_pointer[0] = &imageData.data[(cinfo.output_scanline) * imageData.width * ima
 jpeg_read_scanlines(&cinfo, row_pointer, 1);
 }
 
-// Finaliza la descompresión y libera los recursos.
+// Finaliza la descompresión.
 jpeg_finish_decompress(&cinfo);
 jpeg_destroy_decompress(&cinfo);
 fclose(infile);
@@ -74,20 +76,21 @@ return 1;
 }
 
 const char *filename = argv[1];
+const char *output_filename= "output.jpg";
 
-// Llama a la función para cargar la imagen JPEG.
+// Llama función que carga la imagen JPEG.
 ImageData imageData = loadJPEGImage(filename);
 
-if (imageData.data) {
-printf("Ancho de la imagen: %d\n", imageData.width);
-printf("Alto de la imagen: %d\n", imageData.height);
-printf("Número de componentes de color: %d\n", imageData.numChannels);
+if (imageData.data){
+// Llama funcion que escribe la imagen JPEG
+writeJPEGImage(output_filename, imageData.data, imageData.width, imageData.height, imageData.numChannels);
 
-// Puedes acceder a los datos de la imagen en imageData.data y procesarlos aquí.
-// No olvides liberar la memoria cuando hayas terminado.
+// Libera la memoria.
 free(imageData.data);
+
 };
 
 return 0;
 }
+
 
