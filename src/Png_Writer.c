@@ -42,8 +42,9 @@ void Png_Write ( char *path_salida , png_bytep *newarray ) {
 
 	png_init_io( pngw_ptr , output);
 	// png_set_IHDR sirve para definir el header que hace a la imagen un png, se deben definir los mismos parametros que antes se habian leido de la imagen
-	
-	png_set_IHDR(pngw_ptr , winfo_ptr , rotated_width, rotated_height , bits_d , PNG_COLOR_TYPE_RGBA , PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+	int bits_depth = (int)bits_d;
+	int color = (int)color_type;	
+	png_set_IHDR(pngw_ptr , winfo_ptr , rotated_width, rotated_height , bits_depth , color , PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 	
 	//Guardo la info en el header de mi nuevo png
 	png_write_info(pngw_ptr , winfo_ptr);

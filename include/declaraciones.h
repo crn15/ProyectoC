@@ -1,6 +1,5 @@
-
-
-#include <png.h>
+#include<png.h>
+<<<<<<< HEAD
 enum { True = 0 , False = -1 };
 
 int Exist_Dir( char *path );
@@ -11,4 +10,4 @@ int Not_PNG( char *path );
 
 void Read_Png(char *path);
 void Png_Write ( char *path_salida , png_bytep *newarray );
-png_bytep* rotacion( png_bytep *matrix);
+
