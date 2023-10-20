@@ -1,6 +1,7 @@
-Usage:./main [Opcion] [path] .. -r
+Uso:./main [Opcion] [path] .. -r
 Rotación de imágenes png y jpeg
 Argumentos mandatorios 
 -i ,   path de imagen a ingresar
--o ,   path donde desea guardar la imagen 
+-o ,   path donde desea guardar la imagen
+Argumento default 
 -r,   algoritmo de rotacion

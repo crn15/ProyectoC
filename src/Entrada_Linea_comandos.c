@@ -3,7 +3,7 @@
 #include <string.h>
 #include "declaraciones.h"
 /*Esta parte se encarga de validar las entradas desde la linea de comandos
- *
+ *Recibe por parametros el numero de argumentos, el array argv , path de entrada y path salida
  *
  *
  * */
@@ -16,7 +16,7 @@ enum Posible_Flag_Num { HELP = 2 ,DEFAULT = 5 ,IMAGE = 6 };
 // Solo hay 3 numeros posibles de flags, si se entran menos o mas deberia dar error
 
 // Tiene por argumentos el numero de entradas de la linea, el array con las entradas y los array donde se va a guardar las informacion
-int Flag_Identifier(  int num_argc, char *argv[] , char *path_entrada , char *path_salida , char *transformacion ) {
+int Flag_Identifier(  int num_argc, char *argv[] , char *path_entrada , char *path_salida  ) {
 	if ( num_argc > 6 || num_argc < 1 ) {
 		printf("Numero invalido de argumentos\n");
 		return False;
@@ -51,7 +51,7 @@ int Flag_Identifier(  int num_argc, char *argv[] , char *path_entrada , char *pa
 				// No pueden haber solo 4 argumentos y que uno sea r. Ya que este el unico que se puede omitir
 				if ( strcmp( *(argv + i) , "-i") == True ) {
                                         strcpy( path_entrada , *(argv +i +1));
-                                        printf("%s\n",path_entrada);
+                                      
                                         if ( Exist_Dir( path_entrada ) == False ) {
                                                 return False;
                                         }
@@ -69,7 +69,7 @@ int Flag_Identifier(  int num_argc, char *argv[] , char *path_entrada , char *pa
 			for ( int i = 1; i < num_argc ; i++ ) {
 			       	if ( strcmp( *(argv + i) , "-i") == True ) {
 					strcpy( path_entrada , *(argv +i +1));
-					printf("%s\n",path_entrada);
+					
 					if ( Exist_Dir( path_entrada ) == False ) {
 						return False;
 					}
@@ -80,7 +80,7 @@ int Flag_Identifier(  int num_argc, char *argv[] , char *path_entrada , char *pa
 
 					i+=1;
 				} else if (  strcmp( *(argv + i), "-r") == True) {
-					transformacion = *(argv +i);
+					continue;
 				} else {
 					printf("Flag no valido, Error\n.");
 					return False;

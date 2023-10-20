@@ -5,7 +5,7 @@ enum { True = 0 , False = -1 };
 
 int Exist_Dir( char *path );
 
-int Flag_Identifier(  int num_argc, char *argv[] , char *path_entrada , char *path_salida , char *transformacion );
+int Flag_Identifier(  int num_argc, char *argv[] , char *path_entrada , char *path_salida  );
 
 int Not_PNG( char *path );
 

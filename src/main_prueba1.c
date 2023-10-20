@@ -7,10 +7,10 @@ extern png_bytep *filas_ptr;
 //extern png_bytep *rotated_row_pointers;
 int main(int argc, char *argv[]) {
 
-        char path[35] , out[35] , transform[4];
+        char path[35] , out[35] ;
 
 
-        int x = Flag_Identifier( argc   , argv , path , out, transform);
+        int x = Flag_Identifier( argc   , argv , path , out);
 
         if ( x == False ) {
                 exit(False);
@@ -21,7 +21,6 @@ int main(int argc, char *argv[]) {
 		if ( Not_PNG( path ) == True ) {
 			Read_Png( path );
 			png_bytep *rotated_pointers = rotacion(filas_ptr );
-			printf("%d", rotated_pointers[1][2]);
 			Png_Write( out , rotated_pointers );
 			// Listo
 

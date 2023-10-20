@@ -50,7 +50,7 @@ void Read_Png(char *path) {
 
 	// ancho de la imagen en pixels
 	width = png_get_image_width(png_ptr, info_ptr);
-	printf("%d\n",width);
+	
 
 	//Altura de la imagen en pixels
 	height = png_get_image_height(png_ptr ,info_ptr);
@@ -68,13 +68,13 @@ void Read_Png(char *path) {
 	 *Por eso se utilizan las funciones png_set_packing y png_get_valid
 	 *
 	 * */
-	//if ( bits_d < 8) {
-	//	png_set_packing(png_ptr);
-	//}
+	if ( bits_d < 8) {
+		png_set_packing(png_ptr);
+	}
 
-	//if ( png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) {
-	//	png_set_tRNS_to_alpha(png_ptr);
-	//}
+	if ( png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) {
+		png_set_tRNS_to_alpha(png_ptr);
+	}
 
 	num_channels = ( color_type == PNG_COLOR_TYPE_RGBA) ? 4 : 3;// cantidad de canales de color, 3 para RGB 4 RGBA
 
@@ -109,10 +109,7 @@ void Read_Png(char *path) {
 
 	free(filas_ptr);*/
 	fclose(fp);
-	printf("READ\n");
+	printf("Se realizo la lectura de la imagen con exito.\n");
 }
 
-/*int main(){ 
-	read_png("dog.png");
-	return 0;
-}*/
+

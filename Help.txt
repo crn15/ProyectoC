@@ -1,6 +1,0 @@
-Usage:./main [Opcion] [path] .. -r
-Rotación de imágenes png y jpeg
-Argumentos mandatorios 
--i ,   path de imagen a ingresar
--o ,   path donde desea guardar la imagen 
--r,   algoritmo de rotacion

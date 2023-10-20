@@ -23,7 +23,7 @@ int Not_PNG( char *path ) {
                 fclose(fp);
                 return False ;
         }
-	printf("IS PNG.\n");
+	printf("Su imagen es un png.\n");
 	fclose(fp);
 	return True;
 
