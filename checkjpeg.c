@@ -4,6 +4,28 @@
 #include <jerror.h>
 #include "declarations.h"
 
+// Funcion para verificar si un archivo es un JPEG
+int ItsJPEG(const char *archivo) {
+FILE *file = fopen(archivo, "rb");
+
+if (file == NULL) {
+fprintf(stderr, "No se pudo abrir el archivo\n");
+return -1;
+}
+
+// Comprueba si los primeros tres bytes coinciden con el formato JPEG
+unsigned char header[4];
+fread(header, sizeof(unsigned char), 4, file);
+
+if (header[0] == 0xFF && header[1] == 0xD8 && header[2] == 0xFF && header[3] == 0xE0) {
+fclose(file);
+return 1; // Es un archivo JPEG
+} else {
+fclose(file);
+return 0; // No es un archivo JPEG
+}
+}
+
 
 // Función para cargar imagen JPEG.
 ImageData loadJPEGImage(const char *filename) {
@@ -69,6 +91,11 @@ return 1;
 
 const char *filename = argv[1];
 
+//Llamada a funcion que verifica si es un archivo JPEG.
+int resultado = ItsJPEG(filename);
+if (resultado == 1) {
+printf("%s es un archivo JPEG.\n", filename);
+
 //Llamada a funcion que carga la imagen.
 ImageData imageData = loadJPEGImage(filename);
 
@@ -87,6 +114,11 @@ free(pixelArray);
 
 // Libera la memoria de los datos de la imagen.
 free(imageData.data);
+};
+} else if (resultado == 0) {
+printf("%s no es un archivo JPEG.\n", filename);
+} else {
+fprintf(stderr, "Error al verificar el archivo.\n");
 }
 
 return 0;
