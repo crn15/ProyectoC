@@ -1,55 +1,61 @@
+// Programa que implementa el algoritmo de rotación de la imagen 90 grados a la derecha
+// El algoritmo consiste en reasignar la información de la matriz de pixeles por filas
+// de las coordenadas originales a las correspondientes coordenadas de la imagen rotada
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <png.h>
 
-//extern png_bytep *filas_ptr;
 extern int width, height,num_channels;
 extern png_byte color_type , bits_d;
 int rotated_width, rotated_height;
-//png_bytep * rotated_row_pointers = NULL;
 
+// Función de rotación recibe puntero a matriz de pixles de imagen original y devuelve puntero a la imagen rotada
 png_bytep* rotacion( png_bytep *matrix) {
-	// Variables globales para poder usarlas en la funcion de escritura
+	 // Nuevas dimensiones
 	 rotated_width = height;
-	 
   	 rotated_height = width;
 
-  // reservar memoria para almacenar la imagen rotada
- 	 png_bytep *rotated_row_pointers = (png_bytep *)malloc(sizeof(png_bytep) * rotated_height); //asigna memoria para arreglo de punteros a las filas de pixeles de la imagen rotada - puntero a puntero
-	 //int bits_depth = (int)bits_d;
-	 //size_t rotated_row_size = rotated_width * bits_depth * num_channels / 8;
-
+	 // Reservar memoria para areglo de punteros a filas de pixeles de la imagen rotada (puntero doble)
+ 	 png_bytep *rotated_row_pointers = (png_bytep *)malloc(sizeof(png_bytep) * rotated_height);
+	 
+	 // Asignar memoria para cada puntero que apunta la información de las filas de pixeles
 	 for (int y = 0; y < rotated_height; y++) {
-		 //rotated_row_pointers[y] = (png_byte *)malloc(png_get_rowbytes(png, info));
-		 rotated_row_pointers[y] = (png_byte *)malloc(rotated_width*4);
+		 rotated_row_pointers[y] = (png_byte *)malloc(rotated_width*4); // 4 canales para RGBA
 	 }
 
+	 // ========================================================
+	 // =       Implementación del algoritmo de rotación       =
+	 // ========================================================
+
+	 // Se recorren todas las filas según la altura de la imagen original
 	 for (int y = 0; y < height; y++) {
-    //int rotated_x = height - y - 1;
-    //int rotated_y = x;
-         for (int x = 0; x < width; x++) {
-		 
-		 int rotated_x = height - 1 - y;
-		 int rotated_y = x;
-		 png_bytep pixel = &(matrix[y][x*4]); // obtener pixel original
-	       	 png_bytep rotated_pixel = &(rotated_row_pointers[rotated_y][rotated_x*4]); // obtener pixel rotado
-	        //rotated_pixel = pixel;
-		// copiar el pixel original en la posición correspondiete en la imagen rotada
-		 for (int c = 0; c < num_channels; c++) {
-        	//	rotated_row_pointers[x][c] = row_pointers[y][x * num_channels + c];
-			rotated_pixel[c] = pixel[c];
-      }
-    }
-  }     
-	 // Liberamos el espacio de la matrix sin rotar
+		 // Dentro de cada fila, se recorren todas las abscisas (ancho)
+		 for (int x = 0; x < width; x++) {
+			 // Se calcula las coordenadas correspondietes de la imagen rotada a partir de las cordenadas originales
+			 // Rotar 90° a la derecha equivale a transponer la matriz de pixeles y luego invertir el orden de las columnas 
+			 int rotated_x = height - 1 - y; // Para obtener la coordenada 'x' rotada se invierte orden de columnas
+			 int rotated_y = x; // La coordenada 'y' rotada corresponde a la coordenada 'x' original
+			 
+			 // Se obtienen los punteros a la información de cada pixel para la reasignación de la original a la rotada
+			 png_bytep pixel = &(matrix[y][x*4]);
+	       	 	 png_bytep rotated_pixel = &(rotated_row_pointers[rotated_y][rotated_x*4]);
+			 
+			 // Se copia información del pixel original en el pixel rotado		 
+			 for (int c = 0; c < num_channels; c++) {
+				 rotated_pixel[c] = pixel[c];
+			 }
+		 }
+	 }     
+
+	 // Liberar el espacio de la matriz original
 	 for ( int i = 0 ; i < height ; i++ ) {
 		 free(matrix[i]);
 	 }
-
 	 free(matrix);
 	 matrix = NULL;
-	 //Se retorna la matrix rotada
-	 
+
+	 // Retornar puntero a las filas de la matriz rotada
 	 return rotated_row_pointers;
 }
 
