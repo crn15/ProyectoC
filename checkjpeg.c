@@ -4,14 +4,8 @@
 #include <jerror.h>
 #include "declarations.h"
 
-typedef struct {
-unsigned char *data;
-int width;
-int height;
-int numChannels;
-} ImageData;
 
-// Función que carga una imagen JPEG.
+// Función para cargar imagen JPEG.
 ImageData loadJPEGImage(const char *filename) {
 ImageData imageData;
 imageData.data = NULL;
@@ -22,31 +16,29 @@ imageData.numChannels = 0;
 struct jpeg_decompress_struct cinfo;
 struct jpeg_error_mgr jerr;
 
-// Abre el archivo JPEG en modo lectura binaria.
+// Abre imagen en modo lectura binaria.
 FILE *infile = fopen(filename, "rb");
 if (!infile) {
 fprintf(stderr, "No se pudo abrir el archivo %s\n", filename);
-return imageData; // Devuelve una estructura vacía si hay un error.
+return imageData;
 }
 
-// Configura el manejo de errores.
 cinfo.err = jpeg_std_error(&jerr);
 
-// Crea la estructura de descompresión de JPEG.
+// Inicia estructura de descompresion.
 jpeg_create_decompress(&cinfo);
 jpeg_stdio_src(&cinfo, infile);
 jpeg_read_header(&cinfo, TRUE);
 jpeg_start_decompress(&cinfo);
 
-// Obtiene información sobre la imagen.
+// Guarda caracteristicas de la imagen en ImageData.
 imageData.width = cinfo.output_width;
 imageData.height = cinfo.output_height;
 imageData.numChannels = cinfo.output_components;
 
-// Asigna memoria para los datos de la imagen.
+// Asigna memoria.
 imageData.data = (unsigned char *)malloc(imageData.width * imageData.height * imageData.numChannels);
 
-// Manejo de errores en la asignación de memoria.
 if (!imageData.data) {
 fprintf(stderr, "Error al asignar memoria para los datos de la imagen\n");
 fclose(infile);
@@ -54,19 +46,19 @@ jpeg_destroy_decompress(&cinfo);
 return imageData;
 }
 
-// Lee y descomprime la imagen línea por línea.
+// Lee lineas de la imagen y las guarda en imageData.data
 JSAMPROW row_pointer[1];
 while (cinfo.output_scanline < cinfo.output_height) {
 row_pointer[0] = &imageData.data[(cinfo.output_scanline) * imageData.width * imageData.numChannels];
 jpeg_read_scanlines(&cinfo, row_pointer, 1);
 }
 
-// Finaliza la descompresión.
+// Termina descompresiòn y libera recursos.
 jpeg_finish_decompress(&cinfo);
 jpeg_destroy_decompress(&cinfo);
 fclose(infile);
 
-return imageData;
+return imageData; //Retorna datos de la imagen.
 }
 
 int main(int argc, char *argv[]) {
@@ -76,21 +68,27 @@ return 1;
 }
 
 const char *filename = argv[1];
-const char *output_filename= "output.jpg";
 
-// Llama función que carga la imagen JPEG.
+//Llamada a funcion que carga la imagen.
 ImageData imageData = loadJPEGImage(filename);
 
-if (imageData.data){
-// Llama funcion que escribe la imagen JPEG
-writeJPEGImage(output_filename, imageData.data, imageData.width, imageData.height, imageData.numChannels);
+if (imageData.data != NULL) {
 
-// Libera la memoria.
+// Llamada a funcion que retorna matriz de píxeles.
+unsigned char *pixelArray = JPEGMatrix(&imageData);
+
+//Llamada a funcion que escribe la imagen.
+writeJPEGImage("nueva_imagen.jpeg", pixelArray, imageData.width, imageData.height);
+
+printf("Imagen rotada guardada como 'nueva_imagen.jpeg'\n");
+
+// Libera la memoria de la matriz de píxeles.
+free(pixelArray);
+
+// Libera la memoria de los datos de la imagen.
 free(imageData.data);
-
-};
+}
 
 return 0;
 }
-
 
