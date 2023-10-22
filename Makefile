@@ -12,9 +12,9 @@ OBJECT_FILES = $(patsubst $(SOURCE_DIR)/%.c, $(OBJ_DIR)/%.o , $(SRC_ARCHIVE))
 
 PROGRAM = $(BIN_DIR)/Rotar
 
-LDFLAGS = -lpng16
+LDFLAGS = -lpng16 -ljpeg
 
-CDFLAGS = -Wall -Iinclude
+CDFLAGS = -Wall -Iinclude -g
 #EXP = scr/Entrada_Linea_comandos.c
 #%.o: %.c $(HEADER_DIR)
 #	gcc -c -o $@  $< $(CDFLAGS)
