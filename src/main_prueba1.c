@@ -20,6 +20,7 @@ int main(int argc, char *argv[]) {
 
 		//aqui hay que revisar si es png o jpeg
 		if ( Not_PNG( path ) == True ) {
+			
 			//Lectura del png y asignacion del array
 			Read_Png( path );
 			//Rotacion del png
@@ -32,12 +33,19 @@ int main(int argc, char *argv[]) {
 			printf("Es un jpeg\n");
 			//Llamada a funcion que carga la imagen
 			if (  loadJPEGImage(path , &filas_jpeg) != False ) {
+				printf("Se realizo la lectura de la imagen con exito\n");
+				// Se llama a la funcion que rota al jpeg y devuelve el array rotado
 				JSAMPLE *rotated_jpeg = rotar_jpeg( filas_jpeg);
+				//Se escribe la nueva imagen
 				writeJPEGImage( out , rotated_jpeg);
+				printf("Su imagen fue rotada y se guardo en %s \n" , out);
+			}else { 
+				printf("Error al cargar imagen\n");
+				return False;
 			}	
 		}
 
-        return 0;
+        return True;
 	}
 }
 

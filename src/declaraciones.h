@@ -17,18 +17,7 @@ void Png_Write ( char *path_salida , png_bytep *newarray );
 png_bytep* rotacion( png_bytep *matrix);
 //Declaraciones JPEG
 int ItsJPEG(const char *archivo);
-/*typedef struct {
-unsigned char *data;
-int width;
-int height;
-int numChannels;
-} ImageData;*/
 
-//ImageData loadJPEGImage(const char *filename);
-
-//unsigned char* JPEGMatrix(const ImageData *imageData);
-
-//void writeJPEGImage (const char *filename, unsigned char *rotatedimage, int width, int height,int numChannels);
 
 void writeJPEGImage(const char *filename, JSAMPLE *filas_ptr);
 int loadJPEGImage(const char *filename, JSAMPLE **filas_ptr);

@@ -8,9 +8,10 @@ void writeJPEGImage(const char *filename, JSAMPLE *filas_ptr) {
 	struct jpeg_error_mgr jerr;
 
 	int quality=100;
-	//printf("%d\n", numChannels);
+
 	//Abre el archivo de salida en modo lectura binaria.
 	FILE *outfile = fopen(filename, "wb");
+	//JSAMPROW es un tipo de dato de la libreria que indica un puntero a una fila de datos tipo pixel
 	JSAMPROW row_ptr[1];
 	int row_s;
 
@@ -34,26 +35,25 @@ void writeJPEGImage(const char *filename, JSAMPLE *filas_ptr) {
 	jpeg_set_quality(&cinfo, quality, TRUE);
 
 	jpeg_start_compress(&cinfo, TRUE);
-
+	// Esta linea calcula el numero de bytes en una linea de la nueva imagen.Recordar que cada pixel consta de 3 bytes.
 	row_s = rotated_width * 3;
+
+	// En este caso row_ptr funciona como un index, incia en el incio del nuevo array osea la primera fila de pixels
 	row_ptr[0] = &filas_ptr[0];
 	while ( cinfo.next_scanline < cinfo.image_height ) {
+		//Escribo la nueva linea de pixels 
 		jpeg_write_scanlines(&cinfo, row_ptr , 1);
+		//Le sumo una fila al puntero, recordar que row_ptr es un ** aqui realmente estoy moviendome de una fila a otra
 		row_ptr[0] += row_s;
 	}
 
-	//JSAMPROW row_pointer[1];
-	//int row_stride = width * numChannels;
-	/*
-	while (cinfo.next_scanline < cinfo.image_height) {
-		row_pointer[0] = (JSAMPROW)&rotatedimage[cinfo.next_scanline * row_stride];
-	jpeg_write_scanlines(&cinfo, row_pointer, 1);
-	}*/
+
 
 	//Termina compresion y se liberan recursos.
 	jpeg_finish_compress(&cinfo);
 	fclose(outfile);
 	jpeg_destroy_compress(&cinfo);
+	free(filas_ptr);
 }
 
 

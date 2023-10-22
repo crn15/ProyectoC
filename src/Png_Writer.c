@@ -65,7 +65,7 @@ void Png_Write ( char *path_salida , png_bytep *newarray ) {
 	newarray = NULL;
 
 
-	printf("Su imagen fue rotada \n");
+	printf("Su imagen fue rotada y se guardo en %s \n", path_salida);
 
 }
 

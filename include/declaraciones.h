@@ -15,16 +15,12 @@ void Read_Png(char *path);
 void Png_Write ( char *path_salida , png_bytep *newarray );
 //Declaraciones JPEG
 int ItsJPEG(const char *archivo);
-typedef struct {
-unsigned char *data;
-int width;
-int height;
-int numChannels;
-} ImageData;
 
-ImageData loadJPEGImage(const char *filename);
 
-unsigned char* JPEGMatrix(const ImageData *imageData);
 
-void writeJPEGImage (const char *filename, unsigned char *rotatedimage, int width, int height);
+void writeJPEGImage(const char *filename, JSAMPLE *filas_ptr);
+int loadJPEGImage(const char *filename, JSAMPLE **filas_ptr);
+
+JSAMPLE * rotar_jpeg(JSAMPLE * row_pointers);
+~                                               
 

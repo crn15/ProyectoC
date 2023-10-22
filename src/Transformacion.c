@@ -77,16 +77,25 @@ JSAMPLE * rotar_jpeg(JSAMPLE * row_pointers) {
 	// Algoritmo de rotación
 	for (int y = 0; y < height_jpeg; y++) {
 		for (int x = 0; x < width_jpeg; x++) {
-			// Asignar nuevas coordenadas rotadas
+
+			
+
+			// Asignar nuevas coordenadas rotadas, intercambia x y y y revierte x.
+
 			int rotated_x = height_jpeg - 1 - y;
 			int rotated_y = x;
+			// Se accede al pixel original en row_pointers
+			JSAMPLE *pix = &(row_pointers[(y * width_jpeg + x) * 3]);
+			//Accede a la nueva posicion del pixel en la matriz rotada
+			JSAMPLE *r_pix = &(rotated_row_pointers[(rotated_y * rotated_width + rotated_x) * 3]);
 
-			JSAMPLE *pixel = &(row_pointers[(y * width_jpeg + x) * 3]);
-			JSAMPLE *rotated_pixel = &(rotated_row_pointers[(rotated_y * rotated_width + rotated_x) * 3]);
 
 			// Asignar información del pixel
+
+			// Asignar información del pixel, informacion en cada pixel por eso se hace por cada uno de los 3 canales de color ( 
 			for (int c = 0; c < 3; c++) {
-				rotated_pixel[c] = pixel[c];			
+				r_pix[c] = pix[c];			
+				
 			}
 		}
 	}
