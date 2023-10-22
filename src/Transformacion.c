@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <png.h>
+#include <jpeglib.h>
 
 extern int width, height,num_channels;
 extern png_byte color_type , bits_d;
@@ -59,3 +60,29 @@ png_bytep* rotacion( png_bytep *matrix) {
 	 return rotated_row_pointers;
 }
 
+// Función para rotar imagen en formato JPEG (mismo algoritmo de rotación)
+JSAMPLE * rotar_jpeg(JSAMPLE * row_pointers) {
+	int rotated_width = height;
+	int rotated_height = width;
+
+	JSAMPLE * rotated_row_pointers = (JSAMPLE *)malloc(sizeof(JSAMPLE) * rotated_width * rotated_height * 3);
+
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+			int rotated_x = height - 1 - y;
+			int rotated_y = x;
+
+			JSAMPLE *pixel = &(row_pointers[(y * width + x) * 3]);
+			JSAMPLE *rotated_pixel = &(rotated_row_pointers[(rotated_y * rotated_width + rotated_x) * 3]);
+
+			for (int c = 0; c < 3; c++) {
+				rotated_pixel[c] = pixel[c];			
+			}
+		}
+	}
+
+	free(row_pointers);
+
+	return rotated_row_pointers;
+
+}
