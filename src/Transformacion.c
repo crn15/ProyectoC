@@ -62,19 +62,24 @@ png_bytep* rotacion( png_bytep *matrix) {
 
 // Función para rotar imagen en formato JPEG (mismo algoritmo de rotación)
 JSAMPLE * rotar_jpeg(JSAMPLE * row_pointers) {
+	// Nuevas dimensiones
 	int rotated_width = height;
 	int rotated_height = width;
 
+	// Memory allocation para punteros fila de imagen rotada
 	JSAMPLE * rotated_row_pointers = (JSAMPLE *)malloc(sizeof(JSAMPLE) * rotated_width * rotated_height * 3);
 
+	// Algoritmo de rotación
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
+			// Asignar nuevas coordenadas rotadas
 			int rotated_x = height - 1 - y;
 			int rotated_y = x;
 
 			JSAMPLE *pixel = &(row_pointers[(y * width + x) * 3]);
 			JSAMPLE *rotated_pixel = &(rotated_row_pointers[(rotated_y * rotated_width + rotated_x) * 3]);
 
+			// Asignar información del pixel
 			for (int c = 0; c < 3; c++) {
 				rotated_pixel[c] = pixel[c];			
 			}
