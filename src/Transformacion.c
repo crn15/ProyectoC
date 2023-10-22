@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <png.h>
 #include <jpeglib.h>
+#include <string.h>
 
 extern int width, height,num_channels;
 extern png_byte color_type , bits_d;
@@ -62,21 +63,25 @@ png_bytep* rotacion( png_bytep *matrix) {
 
 // Función para rotar imagen en formato JPEG (mismo algoritmo de rotación)
 JSAMPLE * rotar_jpeg(JSAMPLE * row_pointers) {
-	// Nuevas dimensiones
-	 rotated_width = height_jpeg;
-	 rotated_height = width_jpeg;
+	// Cambiar dimensiones		
+	rotated_width = height_jpeg;
+        rotated_height = width_jpeg;
+
 
 	// Memory allocation para punteros fila de imagen rotada
 	JSAMPLE * rotated_row_pointers = (JSAMPLE *)malloc(sizeof(JSAMPLE) * rotated_width * rotated_height * 3);
 
+	// Inicializar el array de los punteros fila rotados a ceros
+	memset(rotated_row_pointers, 0, sizeof(JSAMPLE) * rotated_width * rotated_height * 3);
+
 	// Algoritmo de rotación
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
+	for (int y = 0; y < height_jpeg; y++) {
+		for (int x = 0; x < width_jpeg; x++) {
 			// Asignar nuevas coordenadas rotadas
-			int rotated_x = height - 1 - y;
+			int rotated_x = height_jpeg - 1 - y;
 			int rotated_y = x;
 
-			JSAMPLE *pixel = &(row_pointers[(y * width + x) * 3]);
+			JSAMPLE *pixel = &(row_pointers[(y * width_jpeg + x) * 3]);
 			JSAMPLE *rotated_pixel = &(rotated_row_pointers[(rotated_y * rotated_width + rotated_x) * 3]);
 
 			// Asignar información del pixel
