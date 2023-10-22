@@ -10,8 +10,8 @@
 extern int width, height,num_channels;
 extern png_byte color_type , bits_d;
 int rotated_width, rotated_height;
-
-// Función de rotación recibe puntero a matriz de pixles de imagen original y devuelve puntero a la imagen rotada
+extern int width_jpeg, height_jpeg;
+// Función ne rotación recibe puntero a matriz de pixles de imagen original y devuelve puntero a la imagen rotada
 png_bytep* rotacion( png_bytep *matrix) {
 	 // Nuevas dimensiones
 	 rotated_width = height;
@@ -63,8 +63,8 @@ png_bytep* rotacion( png_bytep *matrix) {
 // Función para rotar imagen en formato JPEG (mismo algoritmo de rotación)
 JSAMPLE * rotar_jpeg(JSAMPLE * row_pointers) {
 	// Nuevas dimensiones
-	int rotated_width = height;
-	int rotated_height = width;
+	 rotated_width = height_jpeg;
+	 rotated_height = width_jpeg;
 
 	// Memory allocation para punteros fila de imagen rotada
 	JSAMPLE * rotated_row_pointers = (JSAMPLE *)malloc(sizeof(JSAMPLE) * rotated_width * rotated_height * 3);

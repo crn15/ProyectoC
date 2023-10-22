@@ -4,6 +4,7 @@
 #include "declaraciones.h"
 
 extern png_bytep *filas_ptr;
+JSAMPLE *filas_jpeg = NULL;
 //extern png_bytep *rotated_row_pointers;
 int main(int argc, char *argv[]) {
 
@@ -30,20 +31,10 @@ int main(int argc, char *argv[]) {
 		} else if ( ItsJPEG ( path ) == True ) {
 			printf("Es un jpeg\n");
 			//Llamada a funcion que carga la imagen
-			ImageData imageData = loadJPEGImage(path);
-			if (imageData.data != NULL){
-				// Llamada a funcion que retorna matriz de píxeles.
-				unsigned char *pixelArray = JPEGMatrix(&imageData);
-				printf("%d\n",pixelArray[0]);
-				//Llamada a funcion que escribe la imagen.
-				writeJPEGImage(out, pixelArray, imageData.width, imageData.height);
-				printf("Imagen rotada guardada como %s\n", out);
-				// Libera la memoria de la matriz de píxeles.
-				free(pixelArray);
-				// Libera la memoria de los datos de la imagen.
-				free(imageData.data);
-
-			} 
+			if (  loadJPEGImage(path , &filas_jpeg) != False ) {
+				JSAMPLE *rotated_jpeg = rotar_jpeg( filas_jpeg);
+				writeJPEGImage( out , rotated_jpeg);
+			}	
 		}
 
         return 0;
